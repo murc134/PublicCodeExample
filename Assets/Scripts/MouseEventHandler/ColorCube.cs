@@ -121,7 +121,7 @@ public class ColorCube : MouseEventHandler
     public void RandomColor()
     {
         Color c = Color.Randomize();
-        Debug.LogError(c.Similarity(Color.white) + " " + c);
+
         if (c.Similarity(Color.white) > 0.5f)
         {
             RandomColor();
