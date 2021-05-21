@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Very basic class to change info text on Drop Area to explain mouse events
+/// </summary>
 public class InfoTextHandler : MouseEventHandler
 {
     const string defaultString = "Drag & Drop colored cube into this area";

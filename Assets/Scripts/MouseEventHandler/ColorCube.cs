@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Dragable cube that is used to change the color of drop area when dropping it there
+/// </summary>
 public class ColorCube : MouseEventHandler
 {
     private BoxCollider boxCollider;
@@ -10,7 +13,15 @@ public class ColorCube : MouseEventHandler
 
     private MeshRenderer meshRenderer;
 
-    public Color Color { get { return meshRenderer.material.GetColor("_Color"); } }
+    private Color defaultColor;
+
+    /// <summary>
+    /// Current color of this cubes renderer material
+    /// </summary>
+    public Color Color { 
+        get { return meshRenderer.material.GetColor("_Color"); }
+        private set { meshRenderer.material.SetColor("_Color", value); }
+    }
 
     private void Awake()
     {
@@ -21,8 +32,14 @@ public class ColorCube : MouseEventHandler
     private void Start()
     {
         startPosition = transform.position;
+        defaultColor = Color;
     }
 
+    /// <summary>
+    /// When dragging position cube on mouse pointer and deactivate boxcollider to be able to recognize dropping
+    /// </summary>
+    /// <param name="drag"></param>
+    /// <param name="drop"></param>
     public override void HandleDrag(PointerInfo drag, PointerInfo drop)
     {
         if (drag.HitTransform == transform)
@@ -32,6 +49,11 @@ public class ColorCube : MouseEventHandler
         }
     }
 
+    /// <summary>
+    /// When dropped, reset box collider to enabled, to be able to drag again
+    /// </summary>
+    /// <param name="drag"></param>
+    /// <param name="drop"></param>
     public override void HandleDrop(PointerInfo drag, PointerInfo drop)
     {
         if(drag.HitTransform == transform)
@@ -45,9 +67,16 @@ public class ColorCube : MouseEventHandler
 
     }
 
+    /// <summary>
+    /// On double click randomize cube color
+    /// </summary>
+    /// <param name="info"></param>
     public override void HandleMouseClick2(PointerInfo info)
     {
-
+        if(info.HitGameObject == gameObject)
+        {
+            RandomColor();
+        }
     }
 
     public override void HandleMouseDown(PointerInfo info)
@@ -68,9 +97,39 @@ public class ColorCube : MouseEventHandler
     {
 
     }
+
+    /// <summary>
+    /// Reset the position of the cube to the start position
+    /// </summary>
     public void ResetPosition()
     {
         transform.position = startPosition;
         boxCollider.enabled = true;
+    }
+
+    /// <summary>
+    /// Reset cube color to start color
+    /// </summary>
+    public void ResetColor()
+    {
+        Color = defaultColor;
+    }
+
+    /// <summary>
+    /// Randomize cube color. Make sure that the new color value is not close to white color
+    /// </summary>
+    public void RandomColor()
+    {
+        Color c = Color.Randomize();
+        Debug.LogError(c.Similarity(Color.white) + " " + c);
+        if (c.Similarity(Color.white) > 0.5f)
+        {
+            RandomColor();
+        }
+        else
+        {
+            Color = c;
+        }
+        
     }
 }

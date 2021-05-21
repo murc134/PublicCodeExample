@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Abstact class for mouse event handling
+/// </summary>
 public abstract class MouseEventHandler : MonoBehaviour
 {
-    
     public abstract void HandleMouseClick1(PointerInfo info);
     public abstract void HandleMouseClick2(PointerInfo info);
     public abstract void HandleMouseDown(PointerInfo info);

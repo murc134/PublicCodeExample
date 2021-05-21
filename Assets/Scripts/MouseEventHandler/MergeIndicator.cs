@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// UI Element that will preview the color merge
+/// </summary>
 public class MergeIndicator : MouseEventHandler
 {
+    // The graphics used for this UI element
     [SerializeField]
     private Image clickImg, hoverImg, mergeImg, dragImg, dropImg;
 
-    //long i = 0;
-
+    /// <summary>
+    /// When dragging a cube, show preview of drag object
+    /// While dragging over target area also show target area color and merge color preview
+    /// </summary>
+    /// <param name="drag"></param>
+    /// <param name="drop"></param>
     public override void HandleDrag(PointerInfo drag, PointerInfo drop)
     {
         hoverImg.enabled = clickImg.enabled = false;
@@ -28,8 +36,7 @@ public class MergeIndicator : MouseEventHandler
                 mergeImg.enabled = true;
                 dragImg.color = cube.Color;
                 dropImg.color = dropArea.Color;
-                mergeImg.color = dropArea.calcTargetColor(dropArea.Color + cube.Color * dropArea.mergeMultiplier);
-                //Debug.Log($"merge {i++}");
+                mergeImg.color = dropArea.calcTargetColor(cube.Color);
             }
             else
             {
@@ -51,7 +58,6 @@ public class MergeIndicator : MouseEventHandler
         else
         {
             hoverImg.enabled = clickImg.enabled = dragImg.enabled = dropImg.enabled = mergeImg.enabled = false;
-            //Debug.Log($"merge off {i++}");
         }
 
     }
@@ -76,6 +82,10 @@ public class MergeIndicator : MouseEventHandler
 
     }
 
+    /// <summary>
+    /// When holding mouse on Cube, show full circle color preview
+    /// </summary>
+    /// <param name="info"></param>
     public override void HandleMouseHold(PointerInfo info)
     {
         ColorCube cube = info.HitGameObject.GetComponent<ColorCube>();
@@ -85,7 +95,6 @@ public class MergeIndicator : MouseEventHandler
             hoverImg.enabled = clickImg.enabled = true;
             clickImg.color = hoverImg.color = cube.Color;
             dragImg.enabled = dropImg.enabled = mergeImg.enabled = false;
-            //Debug.Log($"merge off {i++}");
         }
         else
         {
@@ -94,6 +103,12 @@ public class MergeIndicator : MouseEventHandler
 
         
     }
+
+    /// <summary>
+    /// When hovering cube show half circle with color preview
+    /// Otherwise hide UI
+    /// </summary>
+    /// <param name="info">Info about mouse pointer</param>
     public override void HandleMouseHover(PointerInfo info)
     {
         ColorCube cube = info.HitGameObject.GetComponent<ColorCube>();
@@ -102,14 +117,12 @@ public class MergeIndicator : MouseEventHandler
         {
             hoverImg.enabled = true;
             clickImg.enabled = mergeImg.enabled = dragImg.enabled = dropImg.enabled = false;
-            //Debug.Log($"merge off {i++}");
 
             hoverImg.color = cube.Color;
         }
         else
         {
             hoverImg.enabled = clickImg.enabled = mergeImg.enabled = dragImg.enabled = dropImg.enabled = false;
-            //Debug.Log($"merge off {i++}");
         }
 
     }

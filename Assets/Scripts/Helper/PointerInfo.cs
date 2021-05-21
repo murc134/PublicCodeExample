@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Used to store information about mouse pointer to handle mouse events
+/// </summary>
 public class PointerInfo 
 {
     public static Vector3 INVALID { get { return new Vector3(float.NaN, float.NaN, float.NaN); } }

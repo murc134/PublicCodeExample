@@ -5,11 +5,26 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
 
+
+// TODO: Possilbe improvements: Left Click, Right Click, Middle Mouse Click
+/// <summary>
+/// This controller is used to handle the mouse events in perspective color mode and delegate them 
+/// </summary>
 public class PointClickController : MonoBehaviour
 {
+    /// <summary>
+    /// Target layers used for mouse pointer handling
+    /// </summary>
     public LayerMask targetLayers;
+
+    /// <summary>
+    /// max mouse handling distance from camera to mousepointer
+    /// </summary>
     public float distance = 1000;
 
+    /// <summary>
+    /// If false, mouse event handling is freezed
+    /// </summary>
     public bool HandleControls = true;
 
     private Vector3 previousPosition;
@@ -27,6 +42,12 @@ public class PointClickController : MonoBehaviour
 
     private float LastClickedTime = 0;
 
+    /// <summary>
+    /// Performs the raycast that is used to handle mouse events
+    /// </summary>
+    /// <param name="realmousepos"></param>
+    /// <param name="info"></param>
+    /// <returns>true if we hit an object that is on the target layer</returns>
     private bool Point(Vector3 realmousepos, out PointerInfo info)
     {
         Ray mousepos = Camera.main.ScreenPointToRay(realmousepos);
@@ -67,6 +88,10 @@ public class PointClickController : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    ///  Handle mousedown event
+    /// </summary>
+    /// <param name="info"></param>
     private void handleMouseDown(PointerInfo info)
     {
         mousePressed = true;
@@ -80,6 +105,10 @@ public class PointClickController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handle mouseup event
+    /// </summary>
+    /// <param name="info"></param>
     private void handleMouseUp(PointerInfo info)
     {
         mousePressed = false;
@@ -133,6 +162,10 @@ public class PointClickController : MonoBehaviour
         ClickDownPosition = PointerInfo.INVALID;
     }
 
+    /// <summary>
+    /// Handles dropping 
+    /// </summary>
+    /// <param name="info"></param>
     private void handleDrop(PointerInfo info)
     {
         foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
@@ -150,6 +183,10 @@ public class PointClickController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles mouse hold and draging
+    /// </summary>
+    /// <param name="info"></param>
     private void handleMouseHold(PointerInfo info)
     {
         if (ClickDownObject.HitTransform == info.HitTransform) // Hold
@@ -168,6 +205,10 @@ public class PointClickController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles mouse hovering event
+    /// </summary>
+    /// <param name="info"></param>
     private void handleMouseHover(PointerInfo info)
     {
         foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
@@ -176,6 +217,9 @@ public class PointClickController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles click events
+    /// </summary>
     private void handleMouseInput()
     {
         PointerInfo info = null;

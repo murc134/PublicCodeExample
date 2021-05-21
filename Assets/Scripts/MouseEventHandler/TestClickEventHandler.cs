@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// Test class for mouse event handling
+/// </summary>
 public class TestClickEventHandler : MouseEventHandler
 {
     public override void HandleDrag(PointerInfo drag, PointerInfo drop)

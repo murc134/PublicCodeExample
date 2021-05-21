@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// An area, where <see cref="ColorCube"/> can be dropped that will then merge the color of the cube into its own color
+/// </summary>
 public class DropArea : MouseEventHandler
 {
     [SerializeField]
@@ -11,8 +14,9 @@ public class DropArea : MouseEventHandler
 
     private MeshRenderer meshrenderer;
 
-    public float mergeMultiplier = 0.1f;
-
+    /// <summary>
+    /// Color of the area
+    /// </summary>
     public Color Color
     {
         get
@@ -21,7 +25,7 @@ public class DropArea : MouseEventHandler
         }
         private set
         {
-            meshrenderer.material.SetColor("_Color", calcTargetColor(value));
+            meshrenderer.material.SetColor("_Color", value);
         }
     }
 
@@ -46,15 +50,24 @@ public class DropArea : MouseEventHandler
         
     }
 
+    /// <summary>
+    /// Reset color cube instances
+    /// If not existing it will create color cube instances. 
+    /// </summary>
     private void ResetDropArea()
     {
         createInstance(in prefabred, ref instancered, 2 * transform.forward);
         createInstance(in prefabgreen, ref instancegreen, 2 * (transform.forward + transform.right));
         createInstance(in prefabblue, ref instanceblue, 2 * (transform.forward - transform.right));
-
-
     }
 
+    /// <summary>
+    /// Creates color cube instance if not existing
+    /// Otherwise reset color cube instance to default values
+    /// </summary>
+    /// <param name="prefab"></param>
+    /// <param name="instance"></param>
+    /// <param name="position"></param>
     private void createInstance(in ColorCube prefab, ref ColorCube instance, Vector3 position)
     {
         if (instance == null)
@@ -65,9 +78,14 @@ public class DropArea : MouseEventHandler
         else
         {
             instance.ResetPosition();
+            instance.ResetColor();
         }
     }
 
+    /// <summary>
+    /// On single click reset cubes
+    /// </summary>
+    /// <param name="info"></param>
     public override void HandleMouseClick1(PointerInfo info)
     {
         if(info.HitGameObject == gameObject)
@@ -76,6 +94,10 @@ public class DropArea : MouseEventHandler
         }
     }
 
+    /// <summary>
+    /// On double click reset drop area color
+    /// </summary>
+    /// <param name="info"></param>
     public override void HandleMouseClick2(PointerInfo info)
     {
         if (info.HitGameObject == gameObject)
@@ -107,6 +129,12 @@ public class DropArea : MouseEventHandler
     {
 
     }
+
+    /// <summary>
+    /// WHen dropping <see cref="ColorCube"/> reset its position and randomize its color
+    /// </summary>
+    /// <param name="drag"></param>
+    /// <param name="drop"></param>
     public override void HandleDrop(PointerInfo drag, PointerInfo drop)
     {
         if(drop.HitTransform == transform)
@@ -115,19 +143,21 @@ public class DropArea : MouseEventHandler
 
             if (cube != null)
             {
-                Color += cube.Color * mergeMultiplier;
+                Color = calcTargetColor(cube.Color);
                 cube.ResetPosition();
+                cube.RandomColor();
             }
         }
         
     }
 
+    /// <summary>
+    /// Used to calculate the drop area target color
+    /// </summary>
+    /// <param name="c"></param>
+    /// <returns>Calculated Color</returns>
     public Color calcTargetColor(Color c)
     {
-        if (c.r > 1) { c.r = c.r - 1; }
-        if (c.g > 1) { c.g = c.g - 1; }
-        if (c.b > 1) { c.b = c.b - 1; }
-
-        return c;
+        return Color.Lerp(Color, c, 0.5f);
     }
 }

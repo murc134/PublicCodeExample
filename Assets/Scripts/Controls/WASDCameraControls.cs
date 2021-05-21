@@ -1,7 +1,9 @@
 ﻿
 using UnityEngine;
 
-
+/// <summary>
+/// Used to handle camera movement
+/// </summary>
 public class WASDCameraControls : MonoBehaviour
 {
     public float Speed = 1;
@@ -64,7 +66,9 @@ public class WASDCameraControls : MonoBehaviour
 
         previousMousePosition = Input.mousePosition;
     }
-
+    /// <summary>
+    /// Handle cam rotation
+    /// </summary>
     private void rotateCamera()
     {
         yaw += speedH * Input.GetAxis("Mouse X");
@@ -72,6 +76,10 @@ public class WASDCameraControls : MonoBehaviour
 
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
     }
+
+    /// <summary>
+    /// Handle movement of camera using mouse
+    /// </summary>
     private void handleMouseMovement()
     {
         Vector3 dir = previousMousePosition - Input.mousePosition;
@@ -92,6 +100,12 @@ public class WASDCameraControls : MonoBehaviour
 
 
     }
+
+    /// <summary>
+    /// Handle moving camera using keyboard
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="direction"></param>
     private void handleKeyMovement(float input, Vector3 direction)
     {
         if (Mathf.Abs(input) > 0)
