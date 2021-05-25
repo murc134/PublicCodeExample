@@ -12,6 +12,19 @@ using UnityEngine.AI;
 /// </summary>
 public class PointClickController : MonoBehaviour
 {
+    public static PointClickController Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                instance = GameObject.FindObjectOfType<PointClickController>();
+            }
+            return instance;
+        }
+    }
+    private static PointClickController instance;
+
     /// <summary>
     /// Target layers used for mouse pointer handling
     /// </summary>
@@ -41,6 +54,40 @@ public class PointClickController : MonoBehaviour
     private float MaxDblClickTime = 0.5f;
 
     private float LastClickedTime = 0;
+
+    protected List<MouseEventHandler> handlers = new List<MouseEventHandler>();
+
+    private void Awake()
+    {
+        if(Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
+    public void RegisterMouseEventHandler(MouseEventHandler handler)
+    {
+        if (!Instance.handlers.Contains(handler))
+        {
+            Instance.handlers.Add(handler);
+        }
+    }
+
+    public void UnregisterMouseEventHandler(MouseEventHandler handler)
+    {
+        if (Instance.handlers.Contains(handler))
+        {
+            Instance.handlers.Remove(handler);
+        }
+    }
 
     /// <summary>
     /// Performs the raycast that is used to handle mouse events
@@ -99,7 +146,7 @@ public class PointClickController : MonoBehaviour
         ClickDownObject = info;
         ClickDownPosition = info.HitPos;
 
-        foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
+        foreach (MouseEventHandler handler in handlers)
         {
             handler.HandleMouseDown(info);
         }
@@ -118,20 +165,20 @@ public class PointClickController : MonoBehaviour
             // Check time
             if ((Time.time - LastClickedTime) <= MaxDblClickTime)
             {
-                foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
+                foreach (MouseEventHandler handler in handlers)
                 {
                     handler.HandleMouseClick2(info);
                 }
                 LastClickObject = null;
                 LastClickedTime = 0;
             }
-            else if(ClickDownObject != info)
+            else if (ClickDownObject != info)
             {
                 handleDrop(info);
             }
             else
             {
-                foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
+                foreach (MouseEventHandler handler in handlers)
                 {
                     handler.HandleMouseClick1(info);
                 }
@@ -168,7 +215,7 @@ public class PointClickController : MonoBehaviour
     /// <param name="info"></param>
     private void handleDrop(PointerInfo info)
     {
-        foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
+        foreach (MouseEventHandler handler in handlers)
         {
             handler.HandleMouseUp(info);
             if (ClickDownObject.HitTransform == info.HitTransform) // Single Click
@@ -191,14 +238,14 @@ public class PointClickController : MonoBehaviour
     {
         if (ClickDownObject.HitTransform == info.HitTransform) // Hold
         {
-            foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
+            foreach (MouseEventHandler handler in handlers)
             {
                 handler.HandleMouseHold(info);
             }
         }
         else // Drag
         {
-            foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
+            foreach (MouseEventHandler handler in handlers)
             {
                 handler.HandleDrag(ClickDownObject, info);
             }
@@ -211,7 +258,7 @@ public class PointClickController : MonoBehaviour
     /// <param name="info"></param>
     private void handleMouseHover(PointerInfo info)
     {
-        foreach (MouseEventHandler handler in GameObject.FindObjectsOfType<MouseEventHandler>())
+        foreach (MouseEventHandler handler in handlers)
         {
             handler.HandleMouseHover(info);
         }
