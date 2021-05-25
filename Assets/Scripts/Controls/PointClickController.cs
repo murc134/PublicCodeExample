@@ -55,7 +55,7 @@ public class PointClickController : MonoBehaviour
 
     private float LastClickedTime = 0;
 
-    protected List<MouseEventHandler> handlers = new List<MouseEventHandler>();
+    private List<MouseEventHandler> handlers = new List<MouseEventHandler>();
 
     private void Awake()
     {
